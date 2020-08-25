@@ -60,38 +60,42 @@ if(isset($_POST['register_button'])){
 		//Count the number of rows returned
 		$num_rows = mysqli_num_rows($e_check);
 
-		if($num_rows > 0) {
-				echo "Email already in use";
+			if($num_rows > 0) {
+				array_push($error_array, "Email already in use<br>");
 			}
 
-  }
-  else {
-    echo "Invalid format";
-  }
-  else {
-    echo "Emails don't match";
-  }
+		}
+		else {
+			array_push($error_array, "Invalid email format<br>");
+		}
 
-  	if(strlen($fname) > 25 || strlen($fname) < 2) {
-		echo "Your first name must be between 2 and 25 characters";
+
+	}
+	else {
+		array_push($error_array, "Emails don't match<br>");
+	}
+
+	if(strlen($fname) > 25 || strlen($fname) < 2) {
+		array_push($error_array, "Your first name must be between 2 and 25 characters<br>");
 	}
 
 	if(strlen($lname) > 25 || strlen($lname) < 2) {
-		echo "Your last name must be between 2 and 25 characters";
+		array_push($error_array,  "Your last name must be between 2 and 25 characters<br>");
 	}
 
 	if($password != $password2) {
-		echo "Your passwords do not match";
+		array_push($error_array,  "Your passwords do not match<br>");
 	}
 	else {
 		if(preg_match('/[^A-Za-z0-9]/', $password)) {
-			echo "Your password can only contain english characters or numbers";
+			array_push($error_array, "Your password can only contain english characters or numbers<br>");
 		}
-  }
-
-  if(strlen($password > 30 || strlen($password) < 5)) {
-		echo "Your password must be betwen 5 and 30 characters";
 	}
+
+	if(strlen($password > 30 || strlen($password) < 5)) {
+		array_push($error_array, "Your password must be betwen 5 and 30 characters<br>");
+	}
+
 
 }
 
