@@ -44,21 +44,24 @@ if(isset($_POST['register_button'])){
 	$em2 = str_replace(' ', '', $em2); //remove spaces
 	$em2 = ucfirst(strtolower($em2)); //Uppercase first letter
 	$_SESSION['reg_email2'] = $em2; //Stores email2 into session variable
-  
-  //Password
+
+	//Password
 	$password = strip_tags($_POST['reg_password']); //Remove html tags
 	$password2 = strip_tags($_POST['reg_password2']); //Remove html tags
 
 	$date = date("Y-m-d"); //Current date
 
-  if($em == $em2) {
-    //Check if email is in valid format 
+	if($em == $em2) {
+		//Check if email is in valid format 
 		if(filter_var($em, FILTER_VALIDATE_EMAIL)) {
-      			$em = filter_var($em, FILTER_VALIDATE_EMAIL);
-		//Check if email already exists 
-		$e_check = mysqli_query($con, "SELECT email FROM users WHERE email='$em'");
-		//Count the number of rows returned
-		$num_rows = mysqli_num_rows($e_check);
+
+			$em = filter_var($em, FILTER_VALIDATE_EMAIL);
+
+			//Check if email already exists 
+			$e_check = mysqli_query($con, "SELECT email FROM users WHERE email='$em'");
+
+			//Count the number of rows returned
+			$num_rows = mysqli_num_rows($e_check);
 
 			if($num_rows > 0) {
 				array_push($error_array, "Email already in use<br>");
@@ -74,6 +77,7 @@ if(isset($_POST['register_button'])){
 	else {
 		array_push($error_array, "Emails don't match<br>");
 	}
+
 
 	if(strlen($fname) > 25 || strlen($fname) < 2) {
 		array_push($error_array, "Your first name must be between 2 and 25 characters<br>");
@@ -95,6 +99,8 @@ if(isset($_POST['register_button'])){
 	if(strlen($password > 30 || strlen($password) < 5)) {
 		array_push($error_array, "Your password must be betwen 5 and 30 characters<br>");
 	}
+
+
 	if(empty($error_array)) {
 		$password = md5($password); //Encrypt password before sending to database
 
@@ -109,8 +115,8 @@ if(isset($_POST['register_button'])){
 			$i++; //Add 1 to i
 			$username = $username . "_" . $i;
 			$check_username_query = mysqli_query($con, "SELECT username FROM users WHERE username='$username'");
-    }
-    
+		}
+
 		//Profile picture assignment
 		$rand = rand(1, 2); //Random number between 1 and 2
 
@@ -120,7 +126,17 @@ if(isset($_POST['register_button'])){
 			$profile_pic = "assets/images/profile_pics/defaults/head_emerald.png";
 
 
-  }
+    $query = mysqli_query($con, "INSERT INTO users VALUES (NULL, '$fname', '$lname', '$username', '$em', '$password', '$date', '$profile_pic', '0', '0', '0', 'no', ',')");
+
+		array_push($error_array, "<span style='color: #14C800;'>You're all set! Goahead and login!</span><br>");
+
+		//Clear session variables 
+		$_SESSION['reg_fname'] = "";
+		$_SESSION['reg_lname'] = "";
+		$_SESSION['reg_email'] = "";
+		$_SESSION['reg_email2'] = "";
+	}
+
 }
 
 ?>
@@ -181,6 +197,8 @@ if(isset($_POST['register_button'])){
 
 		<input type="submit" name="register_button" value="Register">
 		<br>
+
+		<?php if(in_array("<span style='color: #14C800;'>You're all set! Goahead and login!</span><br>", $error_array)) echo "<span style='color: #14C800;'>You're all set! Go ahead and login!</span><br>"; ?>
 
 	</form>
 
